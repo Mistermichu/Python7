@@ -2,7 +2,7 @@
 
 import requests
 import json
-from functions import select_location, get_date
+from functions import select_location, get_date, continue_request
 
 URL = "https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=rain&daily=rain_sum&timezone=Europe%2FLondon&start_date={searched_date}&end_date={searched_date}"
 
@@ -16,9 +16,9 @@ class WeatherForecaster:
         self.url = url
         self.rain_data = {}
 
-    def request(self):
+    def request(self, searched_date):
         api_data = requests.get(self.url.format(
-            latitude=self.latitude, longitude=self.longitude, searched_date=self.searched_date))
+            latitude=self.latitude, longitude=self.longitude, searched_date=searched_date))
         if api_data.status_code == 200:
             api_data = json.loads(api_data.text)
         else:
@@ -56,13 +56,23 @@ class WeatherForecaster:
 
 
 # Run App
+
 latitude, longitude, location_name = select_location()
 searched_date = get_date()
 weather_forecaste = WeatherForecaster(
     latitude, longitude, searched_date, location_name, URL)
-try:
-    rain_info = weather_forecaste[searched_date]
-    print(rain_info)
-except KeyError:
-    rain_info = weather_forecaste.request()
-    weather_forecaste[searched_date] = rain_info
+run_app = True
+while run_app:
+    if searched_date == None:
+        searched_date = get_date()
+    try:
+        rain_info = weather_forecaste[searched_date]
+        print(rain_info)
+    except KeyError:
+        rain_info = weather_forecaste.request(searched_date)
+        weather_forecaste[searched_date] = rain_info
+    user_input = continue_request()
+    if not user_input:
+        run_app = False
+    else:
+        searched_date = None

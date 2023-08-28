@@ -86,3 +86,35 @@ def get_date():
             return date
         except ValueError:
             print("Niepoprawny format daty.\n Spróbuj ponownie")
+
+
+def bad_attribute_value(attribute):
+    print(
+        f"Podana wartość: \"{attribute}\" jest niepoprawna. Spóbuj ponownie.")
+    return None
+
+
+def attribute_type_check(attribute_type, message):
+    if attribute_type == str:
+        print(message)
+        user_input = None
+        while not isinstance(user_input, str):
+            try:
+                user_input = str(input(":>>> "))
+                return user_input
+            except ValueError:
+                user_input = bad_attribute_value(user_input)
+
+
+def continue_request():
+    print("Czy kontynować?")
+    user_confirm = False
+    while not user_confirm:
+        user_confirm = attribute_type_check(str, ">>>TAK/NIE").upper()
+        if user_confirm == "TAK":
+            return True
+        elif user_confirm == "NIE":
+            return False
+        else:
+            user_confirm = bad_attribute_value(user_confirm)
+            user_confirm = False
