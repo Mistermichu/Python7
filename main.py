@@ -2,8 +2,7 @@
 
 import requests
 import json
-from datetime import datetime, timedelta
-from functions import select_location
+from functions import select_location, get_date
 
 
 class WeatherForecaster:
@@ -23,6 +22,5 @@ class WeatherForecaster:
 
 
 # Run App
-TODAY = datetime.now().date()
-TOMORROW = TODAY + timedelta(days=1)
 latitude, longitude = select_location()
+searched_date = get_date()

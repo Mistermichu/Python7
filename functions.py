@@ -1,18 +1,30 @@
 import json
+from datetime import datetime, timedelta
+
+TODAY = datetime.now().date()
+TOMORROW = TODAY + timedelta(days=1)
 
 
-class LoadLocations:
+class Locations:
     def __init__(self, locations_file):
         self.locations = self.load_locations(locations_file)
 
     def load_locations(self, locations_file):
         with open(locations_file, "r") as locations_list:
             available_locations = json.load(locations_list)
-            print(available_locations)
         return available_locations
 
 
-available_locations = LoadLocations("locations.json")
+class SaveLocations:
+    def __init__(self, locations_file, available_locations):
+        self.save = self.save_locations(locations_file, available_locations)
+
+    def save_locations(self, locations_file, available_locations):
+        with open(locations_file, "w") as locations_list:
+            json.dump(available_locations, locations_list)
+
+
+available_locations = Locations("locations.json")
 available_locations = available_locations.locations
 
 
@@ -56,3 +68,21 @@ def add_new_city(location_name):
         "latitude": location_latitude,
         "longitude": location_longitude
     }
+    save_locations = SaveLocations("locations.json", available_locations)
+    save_locations.save
+
+
+def get_date():
+    date_correct = False
+    while not date_correct:
+        global TODAY, TOMORROW
+        print(
+            f"Podaj date (YYYY-MM-DD). Pozostaw pole puste, aby wyświetlić dla jutra, tj.: {TOMORROW}")
+        date = input(": ")
+        if len(date) == 0:
+            return TOMORROW
+        try:
+            date = datetime.strptime(date, "%Y-%m-%d").date()
+            return date
+        except ValueError:
+            print("Niepoprawny format daty.\n Spróbuj ponownie")
