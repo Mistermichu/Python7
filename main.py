@@ -8,12 +8,15 @@ URL = "https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={lon
 
 
 class WeatherForecaster:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, latitude, longitude, searched_date, url) -> None:
+        self.latitude = latitude
+        self.longitude = longitude
+        self.searched_date = searched_date
+        self.url = url
 
-    def request(self, latitude, longitude, searched_date, url):
-        api_data = requests.get(url.format(
-            latitude=latitude, longitude=longitude, searched_date=searched_date))
+    def request(self):
+        api_data = requests.get(self.url.format(
+            latitude=self.latitude, longitude=self.longitude, searched_date=self.searched_date))
         if api_data.status_code == 200:
             api_data = json.loads(api_data.text)
         else:
@@ -47,5 +50,5 @@ class WeatherForecaster:
 # Run App
 latitude, longitude = select_location()
 searched_date = get_date()
-weather_forecaste = WeatherForecaster()
-weather_forecaste.request(latitude, longitude, searched_date, URL)
+weather_forecaste = WeatherForecaster(latitude, longitude, searched_date, URL)
+weather_forecaste.request()
