@@ -58,7 +58,7 @@ def select_location():
         add_new_city(location_name)
     latitude = available_locations[location_name].get("latitude")
     longitude = available_locations[location_name].get("longitude")
-    return latitude, longitude
+    return latitude, longitude, location_name
 
 
 def add_new_city(location_name):

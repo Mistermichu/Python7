@@ -8,11 +8,13 @@ URL = "https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={lon
 
 
 class WeatherForecaster:
-    def __init__(self, latitude, longitude, searched_date, url) -> None:
+    def __init__(self, latitude, longitude, searched_date, location_name, url) -> None:
         self.latitude = latitude
         self.longitude = longitude
         self.searched_date = searched_date
+        self.location_name = location_name
         self.url = url
+        self.rain_data = {}
 
     def request(self):
         api_data = requests.get(self.url.format(
@@ -29,26 +31,38 @@ class WeatherForecaster:
             try:
                 rain_sum = float(rain_sum)
                 if rain_sum > 0:
-                    print("Będzie padać")
+                    rain_info = "Będzie padać"
+                    print(rain_info)
+                    return rain_info
                 elif rain_sum == 0:
-                    print("Nie będzie padać")
+                    rain_info = "Nie będzie padać"
+                    print(rain_info)
+                    return rain_info
                 else:
-                    print("Nie wiem")
+                    rain_info = "Nie wiem"
+                    print(rain_info)
+                    return rain_info
             except ValueError:
                 print("Nie wiem")
 
-    def __setitem__():
-        pass
+    def __setitem__(self, date, rain_info):
+        self.rain_data[date] = rain_info
 
-    def __getitem__():
-        pass
+    def __getitem__(self, date):
+        return self.rain_data[date]
 
-    def __iter__():
-        pass
+    def __iter__(self):
+        return self
 
 
 # Run App
-latitude, longitude = select_location()
+latitude, longitude, location_name = select_location()
 searched_date = get_date()
-weather_forecaste = WeatherForecaster(latitude, longitude, searched_date, URL)
-weather_forecaste.request()
+weather_forecaste = WeatherForecaster(
+    latitude, longitude, searched_date, location_name, URL)
+try:
+    rain_info = weather_forecaste[searched_date]
+    print(rain_info)
+except KeyError:
+    rain_info = weather_forecaste.request()
+    weather_forecaste[searched_date] = rain_info
